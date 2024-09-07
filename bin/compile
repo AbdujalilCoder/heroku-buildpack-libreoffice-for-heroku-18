@@ -14,7 +14,7 @@ CACHE_DIR=$2 # the contents of CACHE_DIR are persisted between builds
 if [ -f $BUILD_DIR/LibreOfficeAppImage ] ; then
     DOWNLOAD=$(grep http $BUILD_DIR/LibreOfficeAppImage | head -n 1)
 else
-    DOWNLOAD="https://dev-builds.libreoffice.org/pre-releases/deb/x86_64/LibreOfficeDev_24.8.0.0.alpha1_Linux_x86-64_deb.tar.gz"
+    DOWNLOAD="https://appimages.libreitalia.org/LibreOffice-24.2.0.3.basic-x86_64.AppImage"
 fi
 VERSION=$(echo $DOWNLOAD | grep -Poi "(?<=LibreOffice-)[^/]+(?=\.AppImage)")
 VERSION=${VERSION:-default} # avoid empty version if the grep fails to match

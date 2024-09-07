@@ -10,33 +10,29 @@ INSTALL_DIR="$VENDOR_DIR/libreoffice"
 mkdir -p $INSTALL_DIR
 CACHE_DIR=$2 # the contents of CACHE_DIR are persisted between builds
 
-# libreoffice
+# LibreOffice 4.4.5
 if [ -f $BUILD_DIR/LibreOfficeAppImage ] ; then
     DOWNLOAD=$(grep http $BUILD_DIR/LibreOfficeAppImage | head -n 1)
 else
-    DOWNLOAD="https://libreoffice.soluzioniopen.com/stable/standard/LibreOffice-fresh.standard-x86_64.AppImage"
+    DOWNLOAD="https://downloadarchive.documentfoundation.org/libreoffice/old/4.4.5.2/LibreOffice_4.4.5.2_Linux_x86-64_deb.tar.gz"
 fi
-VERSION=$(echo $DOWNLOAD | grep -Poi "(?<=LibreOffice-)[^/]+(?=\.AppImage)")
-VERSION=${VERSION:-default} # avoid empty version if the grep fails to match
-FILE_NAME=LibreOffice-${VERSION}.AppImage
+VERSION="4.4.5.2" # Explicit version for clarity
+FILE_NAME="LibreOffice_${VERSION}_Linux_x86-64_deb.tar.gz"
 
 mkdir -p $CACHE_DIR
 if ! [ -e $CACHE_DIR/$FILE_NAME ]; then
-  echo "-----> downloading LibreOffice AppImage"
+  echo "-----> downloading LibreOffice 4.4.5"
   curl -L $DOWNLOAD > $CACHE_DIR/$FILE_NAME
 
-  echo "-----> extracting LibreOffice from AppImage archive"
+  echo "-----> extracting LibreOffice from archive"
   cd $CACHE_DIR
-  chmod a+x $FILE_NAME
-  ./$FILE_NAME --appimage-extract
-  mv squashfs-root "libreoffice-${VERSION}"
+  tar -xzf $FILE_NAME
+  mv LibreOffice_4.4.5.2/ $INSTALL_DIR
 else
   echo "file already exists $CACHE_DIR/$FILE_NAME"
 fi
 
-cp -R $CACHE_DIR/libreoffice-${VERSION}/usr $INSTALL_DIR
-cp -R $CACHE_DIR/libreoffice-${VERSION}/opt $INSTALL_DIR
-
+# Update profile to include LibreOffice in PATH
 PROFILE_PATH="$BUILD_DIR/.profile.d/libreoffice.sh"
 RUNTIME_INSTALL_PATH="\$HOME/vendor/libreoffice"
 mkdir -p $(dirname $PROFILE_PATH)
